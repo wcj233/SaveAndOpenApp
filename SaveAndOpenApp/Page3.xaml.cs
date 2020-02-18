@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -48,17 +49,18 @@ namespace SaveAndOpenApp
 
         private MyVIewModel VM { get; set; }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (App.lists.Count > 2)
             {
                 App.lists.RemoveAt(2);
             }
             App.lists.Insert(2, VM);
-            
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
             string json = Serializer.Serialize(App.lists);
-            localSettings.Values["MyList"] = json;
+            StorageFolder LocalStorageFolder = ApplicationData.Current.LocalFolder;
+            StorageFile file = await LocalStorageFolder.CreateFileAsync("MyData.txt", CreationCollisionOption.OpenIfExists);
+            await FileIO.WriteTextAsync(file,json);
         }
     }
 }

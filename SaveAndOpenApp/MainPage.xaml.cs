@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,14 +31,14 @@ namespace SaveAndOpenApp
 
   
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            Object value = localSettings.Values["MyList"];
-            if (value != null) {
-                App.lists = Serializer.Deserialize<List<MyVIewModel>>(value.ToString());
+            StorageFolder LocalStorageFolder = ApplicationData.Current.LocalFolder;
+            StorageFile file = await LocalStorageFolder.CreateFileAsync("MyData.txt",CreationCollisionOption.OpenIfExists);
+            string jsonValue = await FileIO.ReadTextAsync(file);
+            if (jsonValue.Length>0) {
+                App.lists = Serializer.Deserialize<List<MyVIewModel>>(jsonValue.ToString());
             }
-            
         }
         
 
