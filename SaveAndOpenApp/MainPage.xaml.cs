@@ -37,6 +37,7 @@ namespace SaveAndOpenApp
             StorageFile file = await LocalStorageFolder.CreateFileAsync("MyData.txt",CreationCollisionOption.OpenIfExists);
             string jsonValue = await FileIO.ReadTextAsync(file);
             if (jsonValue.Length>0) {
+
                 App.lists = Serializer.Deserialize<List<MyVIewModel>>(jsonValue.ToString());
             }
         }
